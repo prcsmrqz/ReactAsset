@@ -15,3 +15,11 @@ require("channels")
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
+import React from "react";
+import ReactDOM from "react-dom/client"; // ✅ Use "react-dom/client" in React 18+
+import Home from "../components/Home";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const root = ReactDOM.createRoot(document.getElementById("root")); // ✅ Correct method for React 18+
+  root.render(<Home greeting="Hello World" />);
+});
