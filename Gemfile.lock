@@ -122,6 +122,7 @@ GEM
     nokogiri (1.15.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    pagy (6.5.0)
     public_suffix (5.1.1)
     puma (4.3.12)
       nio4r (~> 2.0)
@@ -237,6 +238,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   listen (~> 3.2)
   mysql2 (~> 0.5.6)
+  pagy
   puma (~> 4.1)
   rails (~> 6.0.6, >= 6.0.6.1)
   react-rails
