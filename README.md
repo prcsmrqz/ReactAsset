@@ -22,3 +22,14 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+INSTALL REACT USING REACT-RAILS
+
+Add react-rails
+bundle install
+rails webpacker:install
+rails webpacker:install:react
+rails g react:install
+
+create component
+rails g react:component NameofComponent propsName:propsDataType
