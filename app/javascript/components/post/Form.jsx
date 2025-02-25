@@ -2,29 +2,41 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
+//it protects from cross site request forgery, rails protect csrf attack by requiring a token for a non-GET requests
+// it retrieves token from meta tag in application.html.erb
+// axios headers must add token in every request in order for rails to accepts them
+// without this when we request using post / put / delete will cause a 403 forbidden error to prevent unauthorized form submission
 const getCsrfToken = () => {
   return document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
 };
 axios.defaults.headers.common["X-CSRF-Token"] = getCsrfToken();
 
 const Form = () => {
+  // enable the redirection after form submission
   const navigate = useNavigate();
-  const { id } = useParams(); // Get post ID from URL
+
+  const { id } = useParams(); // Get post ID from URL, if id exist edit if not create
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [errors, setErrors] = useState([]);
 
-  // Fetch post details if editing
+  // if theres an id, it fetch post details
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`/posts/${id}`);
+        setTitle(response.data.title);
+        setBody(response.data.body);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+  
     if (id) {
-      axios.get(`/posts/${id}`)
-        .then(response => {
-          setTitle(response.data.title);
-          setBody(response.data.body);
-        })
-        .catch(error => console.error("Error fetching post:", error));
+      fetchPost();
     }
   }, [id]);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,8 +48,10 @@ const Form = () => {
       } else {
         await axios.post("/posts", { post: { title, body } });
       }
+      //redirect to post.jsx after creating / updating
       navigate("/post");
     } catch (error) {
+      // if theres an error it will set the errors and show it after submit
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -54,25 +68,29 @@ const Form = () => {
       <br />
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto">
         <div className="flex flex-col gap-4">
-        {errors.length > 0 && (
+
+        { /* if there is an error it iterates over it */ }
+          {errors.length > 0 && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
               <ul>{errors.map((err, index) => <li key={index}>{err}</li>)}</ul>
             </div>
           )}
+
+          { /* (e.target.value), update the title and body state */ }
           <input
             type="text"
             placeholder="Title"
             value={title}
             className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             onChange={(e) => setTitle(e.target.value)}
-            required
+            
           />
           <textarea
             placeholder="Body"
             value={body}
             className="border border-gray-300 rounded-md p-2 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
             onChange={(e) => setBody(e.target.value)}
-            required
+            
           />
           
           <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300">

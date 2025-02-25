@@ -7,7 +7,7 @@ function Home(props) {
     <>
     <div className="bg-white py-20">
       <div className="grid grid-cols-2 gap-4 p-10">
-        {/* Text section */}
+
         <div className="flex flex-col space-y-2 p-5">
           <h6 className="text-2xl font-bold text-gray-800 mb-0">YOUR GO-TO</h6>
           <h1 className="text-7xl font-bold text-gray-800 mb-5">CONNECT > SHARE > DISCOVER </h1>
@@ -20,7 +20,6 @@ function Home(props) {
           </button>
         </div>
 
-        {/* Image section */}
         <div className="flex items-center justify-center p-5">
           <img
             src="/assets/img/homepic.png"

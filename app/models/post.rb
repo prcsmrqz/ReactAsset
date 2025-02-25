@@ -1,3 +1,4 @@
 class Post < ApplicationRecord
-    validates :title, length: {maximum: 2}
+    validates :title, :body, presence: true
+
 end

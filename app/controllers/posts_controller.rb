@@ -2,11 +2,15 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[show update destroy]
   include Pagy::Backend
 
-  # GET /posts
+  #use json response for sending the data since react relies on api to fetch and receive data
+  #to serialize object and send as a response / json
   def index
-    @pagy, @posts = pagy(Post.all, items: 10) # Set items per page
+    @pagy, @posts = pagy(Post.all, items: 5) # Set items per page
     render json: {
-      data: @posts,
+      #get posts and pages that sends to the react component
+      #left will be the variable that use to access in react component
+      #right the valus that will be passed
+      posts: @posts,
       page: @pagy.page,
       pages: @pagy.pages,
       next: @pagy.next ? @pagy.next : nil,
@@ -14,14 +18,10 @@ class PostsController < ApplicationController
     }
   end
   
-  
-  
-  # GET /posts/:id
   def show
     render json: @post
   end
 
-  # POST /posts
   def create
     @post = Post.new(post_params)
 
@@ -32,7 +32,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # PUT/PATCH /posts/:id
   def update
     if @post.update(post_params)
       render json: @post
@@ -41,9 +40,9 @@ class PostsController < ApplicationController
     end
   end
 
-  # DELETE /posts/:id
   def destroy
     @post.destroy
+    #returns 204 No Content with no body
     head :no_content
   end
 
