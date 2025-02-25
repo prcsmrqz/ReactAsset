@@ -23,6 +23,20 @@ Things you may want to cover:
 
 * ...
 
+INSTALL NODE V14 IT COMPATIBLE WITH CURRENT LIB 2.27
+curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+source ~/.bashrc
+nvm install 14
+nvm use 14
+nvm alias default 14
+node -v
+npm -v
+
+INSTALL YARN
+npm install -g yarn
+yarn -v
+
+
 INSTALL REACT USING REACT-RAILS
 
 Add react-rails

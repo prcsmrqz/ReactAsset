@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <h1 className="text-2xl font-bold">
-          <Link to="/">Social Media App</Link>
+          <Link to="/">Article App</Link>
         </h1>
 
         <ul className="flex space-x-6">

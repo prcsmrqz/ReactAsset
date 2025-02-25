@@ -76,12 +76,20 @@ const Post = () => {
                 <td className="border border-gray-300 px-4 py-2">{p.body}</td>
                 { /* pass the post id when edit or delete */ }
                 <td className="border border-gray-300 px-4 py-2 flex gap-4 justify-center">
+                <Link
+                    to={`/show/${p.id}`}
+                    className="bg-blue-400 hover:bg-blue-500 text-black py-1 px-2 rounded"
+                  >
+                    Show
+                  </Link>
+
                   <Link
                     to={`/edit/${p.id}`}
                     className="bg-yellow-400 hover:bg-yellow-500 text-black py-1 px-2 rounded"
                   >
                     Edit
                   </Link>
+                  
                   <button
                     className="bg-red-400 hover:bg-red-500 text-black py-1 px-2 rounded"
                     onClick={() => deletePost(p.id)}

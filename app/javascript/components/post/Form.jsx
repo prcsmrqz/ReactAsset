@@ -58,7 +58,7 @@ const Form = () => {
         {id ? "Edit Post" : "Create New Post"}
       </h1>
       <br />
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto">
+      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 w-full max-w-xl mx-auto">
         <div className="flex flex-col gap-4">
 
         { /* if there is an error it iterates over it */ }
@@ -80,7 +80,7 @@ const Form = () => {
           <textarea
             placeholder="Body"
             value={body}
-            className="border border-gray-300 rounded-md p-2 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="border border-gray-300 rounded-md p-2 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
             onChange={(e) => setBody(e.target.value)}
             
           />

@@ -6,6 +6,7 @@ import Home from "./Home";
 import Dashboard from "./Dashboard";
 import Post from "./Post";
 import Form from "./post/Form";
+import ShowForm from "./post/ShowForm";
 
 
 //it protects from cross site request forgery, rails protect csrf attack by requiring a token for a non-GET requests
@@ -29,6 +30,7 @@ const App = (props) => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/post" element={<Post />} />
         <Route path="/edit/:id" element={<Form />} />
+        <Route path="/show/:id" element={<ShowForm />} />
         <Route path="/form" element={<Form />} />
 
       </Routes>
