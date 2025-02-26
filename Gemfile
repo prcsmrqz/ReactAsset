@@ -54,3 +54,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'react-rails'
 gem 'pagy'
+gem 'devise', '~> 4.9', '>= 4.9.4'
+gem 'jsonapi-serializer', '~> 2.2'
