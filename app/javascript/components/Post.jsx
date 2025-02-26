@@ -73,7 +73,10 @@ const Post = () => {
                 <td className="border border-gray-300 px-4 py-2">
                   <strong>{p.title}</strong>
                 </td>
-                <td className="border border-gray-300 px-4 py-2">{p.body}</td>
+                <td className="border border-gray-300 px-4 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
+                  {p.body}
+                </td>
+
                 { /* pass the post id when edit or delete */ }
                 <td className="border border-gray-300 px-4 py-2 flex gap-4 justify-center">
                 <Link

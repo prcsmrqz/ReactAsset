@@ -8,6 +8,7 @@ const ShowForm = () => {
   const [title, setTitle] = useState("");
   const [postBody, setPostBody] = useState("");
   const [errors, setErrors] = useState([]);
+
   const [comments, setComments] = useState([]);
   const [commenter, setCommenter] = useState("");
   const [commentBody, setCommentBody] = useState("");
@@ -49,6 +50,19 @@ const ShowForm = () => {
       }
     }
   };
+  const deleteComment = async (id, cid) => {
+
+    //show an alert if yes, then proceed to delete comment if not return
+    const confirmDelete = window.confirm("Are you sure you want to delete this comment?");
+    if (!confirmDelete) return;
+  
+    try {
+      await axios.delete(`/posts/${id}/comments/${cid}`); // API request to delete comment
+      setComments(comments.filter((c) => c.id !== cid)); // Remove deleted comment from state, creates new array that exclude the deleted comment
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
 
   return (
     <div className="py-10 px-20">
@@ -80,7 +94,7 @@ const ShowForm = () => {
             />
 
             <textarea
-              placeholder="Comment"
+              placeholder="Body"
               value={commentBody}
               className="border border-gray-300 rounded-md p-2 h-15 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
               onChange={(e) => setCommentBody(e.target.value)}
@@ -111,6 +125,10 @@ const ShowForm = () => {
               <hr className="mt-2 mb-2" />
               <p>Commenter: {c.commenter}</p>
               <p>Body: {c.body}</p>
+              <button
+                    className="bg-red-400 hover:bg-red-500 text-black py-1 px-2 rounded"
+                    onClick={() => deleteComment(id, c.id)}
+                  >Delete</button>
             </div>
           ))
         ) : (

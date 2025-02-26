@@ -5,7 +5,7 @@ class PostsController < ApplicationController
   #use json response for sending the data since react relies on api to fetch and receive data
   #to serialize object and send as a response / json
   def index
-    @pagy, @posts = pagy(Post.all, items: 5) # Set items per page
+    @pagy, @posts = pagy(Post.all.order(created_at: :desc), items: 5) # Set items per page
     render json: {
       #get posts and pages that sends to the react component
       #left will be the variable that use to access in react component
