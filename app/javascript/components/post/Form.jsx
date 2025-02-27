@@ -35,6 +35,7 @@ const Form = () => {
     setErrors([]);
 
     try {
+      // if theres an id update, else create
       if (id) {
         await axios.put(`/posts/${id}`, { post: { title, body } });
       } else {
@@ -69,21 +70,11 @@ const Form = () => {
           )}
 
           { /* (e.target.value), update the title and body state */ }
-          <input
-            type="text"
-            placeholder="Title"
-            value={title}
-            className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            onChange={(e) => setTitle(e.target.value)}
+          <input type="text" placeholder="Title" value={title} className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onChange={(e) => setTitle(e.target.value)} />
             
-          />
-          <textarea
-            placeholder="Body"
-            value={body}
-            className="border border-gray-300 rounded-md p-2 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
-            onChange={(e) => setBody(e.target.value)}
-            
-          />
+          <textarea placeholder="Body" value={body} className="border border-gray-300 rounded-md p-2 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onChange={(e) => setBody(e.target.value)} />
           
           <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
             {id ? "Update" : "Create"}

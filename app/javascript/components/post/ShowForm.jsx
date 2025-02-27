@@ -13,6 +13,7 @@ const ShowForm = () => {
   const [commenter, setCommenter] = useState("");
   const [commentBody, setCommentBody] = useState("");
 
+  //get the title, body, and comments
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -35,10 +36,11 @@ const ShowForm = () => {
     setErrors([]);
 
     try {
+      // save comment
       const response = await axios.post(`/posts/${id}/comments`, {
         comment: { commenter, body: commentBody },
       });
-
+      //set the comments to append then null the commenter and comment body
       setComments([...comments, response.data]);
       setCommenter("");
       setCommentBody("");
@@ -57,7 +59,8 @@ const ShowForm = () => {
     if (!confirmDelete) return;
   
     try {
-      await axios.delete(`/posts/${id}/comments/${cid}`); // API request to delete comment
+      // API request to delete comment, we use id for posts and cid for comment_id to delete
+      await axios.delete(`/posts/${id}/comments/${cid}`); 
       setComments(comments.filter((c) => c.id !== cid)); // Remove deleted comment from state, creates new array that exclude the deleted comment
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -85,32 +88,17 @@ const ShowForm = () => {
               </div>
             )}
 
-            <input
-              type="text"
-              placeholder="Commenter"
-              value={commenter}
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              onChange={(e) => setCommenter(e.target.value)}
-            />
+            <input type="text" placeholder="Commenter" value={commenter} className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              onChange={(e) => setCommenter(e.target.value)} />
 
-            <textarea
-              placeholder="Body"
-              value={commentBody}
-              className="border border-gray-300 rounded-md p-2 h-15 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
-              onChange={(e) => setCommentBody(e.target.value)}
-            />
+            <textarea placeholder="Body" value={commentBody} className="border border-gray-300 rounded-md p-2 h-15 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+              onChange={(e) => setCommentBody(e.target.value)} />
 
             <div className="flex items-end justify-between gap-5">
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
-              >
+              <button type="submit"className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
                 Comment
               </button>
-              <Link
-                to="/post"
-                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold transition text-center"
-              >
+              <Link to="/post" className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold transition text-center" >
                 Back
               </Link>
             </div>
@@ -125,10 +113,9 @@ const ShowForm = () => {
               <hr className="mt-2 mb-2" />
               <p>Commenter: {c.commenter}</p>
               <p>Body: {c.body}</p>
-              <button
-                    className="bg-red-400 hover:bg-red-500 text-black py-1 px-2 rounded"
-                    onClick={() => deleteComment(id, c.id)}
-                  >Delete</button>
+              <button className="bg-red-400 hover:bg-red-500 text-black py-1 px-2 rounded" onClick={() => deleteComment(id, c.id)}>
+                Delete
+              </button>
             </div>
           ))
         ) : (

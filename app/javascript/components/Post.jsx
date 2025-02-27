@@ -6,7 +6,8 @@ const Post = () => {
 
   //Store the list of posts, it uses array since the data can be more than 1
   const [posts, setPosts] = useState([]); 
-  
+  const [error, setError] = useState(null);
+
   //set the pagination details, use 1 for currentPage and totalPages to have a default value
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, nextPage: null, prevPage: null, });
 
@@ -35,7 +36,7 @@ const Post = () => {
 
   //delete post getting the id
   const deletePost = async (id) => {
-
+    setError(null);
     //show an alert if yes, then proceed to delete post if not return
     const confirmDelete = window.confirm("Are you sure you want to delete your post?");
     if (!confirmDelete) return;
@@ -44,7 +45,7 @@ const Post = () => {
       await axios.delete(`/posts/${id}`); // API request to delete post
       setPosts(posts.filter((p) => p.id !== id)); // Remove deleted post from state, creates new array that exclude the deleted post
     } catch (error) {
-      console.error("Error deleting post:", error);
+      setError("Error deleting post:", error);
     }
   };
 
@@ -53,7 +54,9 @@ const Post = () => {
       <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center">
         CRUD App with React-Rails
       </h1>
-      <Link to="/form" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"> Create Post </Link>
+      <Link to="/create" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"> 
+        Create Post 
+      </Link>
       <br />
       <br />
 
@@ -79,26 +82,17 @@ const Post = () => {
 
                 { /* pass the post id when edit or delete */ }
                 <td className="border border-gray-300 px-4 py-2 flex gap-4 justify-center">
-                <Link
-                    to={`/show/${p.id}`}
-                    className="bg-blue-400 hover:bg-blue-500 text-black py-1 px-2 rounded"
-                  >
+                <Link to={`/show/${p.id}`} className="bg-blue-400 hover:bg-blue-500 text-black py-1 px-2 rounded" >
                     Show
-                  </Link>
+                </Link>
 
-                  <Link
-                    to={`/edit/${p.id}`}
-                    className="bg-yellow-400 hover:bg-yellow-500 text-black py-1 px-2 rounded"
-                  >
+                <Link to={`/edit/${p.id}`} className="bg-yellow-400 hover:bg-yellow-500 text-black py-1 px-2 rounded">
                     Edit
-                  </Link>
+                </Link>
                   
-                  <button
-                    className="bg-red-400 hover:bg-red-500 text-black py-1 px-2 rounded"
-                    onClick={() => deletePost(p.id)}
-                  >
-                    Delete
-                  </button>
+                <button className="bg-red-400 hover:bg-red-500 text-black py-1 px-2 rounded" onClick={() => deletePost(p.id)} >
+                  Delete
+                </button>
                 </td>
               </tr>
             ))
@@ -115,13 +109,8 @@ const Post = () => {
       {/* Pagination */}
       <div className="flex justify-center mt-4 gap-4">
         {/* Disable if previous page is null, call fetchPosts(pagination.prevPage) to set the page number based on prevPage */}
-        <button
-          className={`px-4 py-2 rounded ${
-            pagination.prevPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed"
-          }`}
-          onClick={() => fetchPosts(pagination.prevPage)}
-          disabled={!pagination.prevPage}
-        >
+        <button className={`px-4 py-2 rounded ${ pagination.prevPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed"}`}
+          onClick={() => fetchPosts(pagination.prevPage)} disabled={!pagination.prevPage}>
           Previous
         </button>
 
@@ -129,13 +118,9 @@ const Post = () => {
           Page {pagination.currentPage} of {pagination.totalPages}
         </span>
         {/* Disable if next page is null, call fetchPosts(pagination.nextPage) to set the page number based on nextPage */}
-        <button
-          className={`px-4 py-2 rounded ${
-            pagination.nextPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed"
-          }`}
+        <button className={`px-4 py-2 rounded ${ pagination.nextPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed" }`}
           onClick={() => fetchPosts(pagination.nextPage)}
-          disabled={!pagination.nextPage}
-        >
+          disabled={!pagination.nextPage} >
           Next
         </button>
       </div>

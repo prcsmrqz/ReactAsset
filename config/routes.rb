@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }, defaults: { format: :json }
 
-  # Custom route to check login status
+  # Route for checking if user log in
   devise_scope :user do
     get "/users/check_auth", to: "users/sessions#check_auth"
   end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+
+  #ensure that the controller only responds with JSON
   respond_to :json
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
@@ -64,6 +66,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   private
 
+  #serialize data before passing to frontend, edit profile
   def respond_with(resource, _opts = {})
     if resource.persisted?
       render json: UserSerializer.new(resource).as_json, status: :created
