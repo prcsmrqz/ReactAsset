@@ -16,5 +16,6 @@ Rails.application.routes.draw do
 
   root to: "home#index"
   get '*path', to: 'home#index', constraints: ->(req) { !req.xhr? && req.format.html? }
+  get "home/show", to: "home#show"
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

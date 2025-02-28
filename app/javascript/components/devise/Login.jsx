@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import showAlert from "../Alert";
 
 const Login = ({ onLoginSuccess, refreshCsrfToken }) => {
 
@@ -43,6 +44,8 @@ const Login = ({ onLoginSuccess, refreshCsrfToken }) => {
             console.log("Login successful:", response.data);
       
             await refreshCsrfToken();
+            
+            showAlert("Logged In", "You logged in to your accound", "success");
             onLoginSuccess();
             navigate("/post");
           }

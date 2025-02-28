@@ -1,11 +1,15 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_user
   before_action :set_post, only: %i[show update destroy]
+ 
   include Pagy::Backend
 
   #use json response for sending the data since react relies on api to fetch and receive data
   #to serialize object and send as a response / json
   def index
-    @pagy, @posts = pagy(Post.all.order(created_at: :desc), items: 5) # Set items per page
+    
+    @pagy, @posts = pagy(@user.posts.order(created_at: :desc), items: 5) # Set items per page
     render json: {
       #get posts and pages that sends to the react component
       #left will be the variable that use to access in react component
@@ -24,6 +28,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
+    @post.user = current_user
 
     if @post.save
       render json: @post, status: :created
@@ -54,6 +59,11 @@ class PostsController < ApplicationController
     render json: { error: "Post not found" }, status: :not_found
   end
 
+  def set_user
+    @user = current_user
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "User not found" }, status: :not_found
+  end
   def post_params
     params.require(:post).permit(:title, :body)
   end

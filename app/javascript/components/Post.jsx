@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; //Navigation between pages using React Router
+import { Link } from "react-router-dom"; 
+import showAlert from "./Alert";
 
 const Post = () => {
 
@@ -37,18 +38,24 @@ const Post = () => {
   //delete post getting the id
   const deletePost = async (id) => {
     setError(null);
-    //show an alert if yes, then proceed to delete post if not return
-    const confirmDelete = window.confirm("Are you sure you want to delete your post?");
-    if (!confirmDelete) return;
+  
+    // Wait for the confirmation of sweet alert to resolve
+    const result = await showAlert("Are you sure?", "You won't be able to revert this post!", "warning", "delete");
+  
+    // If user cancels, stop the deletion process
+    if (!result.isConfirmed) return;
   
     try {
       await axios.delete(`/posts/${id}`); // API request to delete post
-      setPosts(posts.filter((p) => p.id !== id)); // Remove deleted post from state, creates new array that exclude the deleted post
+      setPosts(posts.filter((p) => p.id !== id)); // Remove deleted post from state
+  
+      // Show success alert after deletion
+      showAlert("Deleted!", "Post deleted successfully", "success");
     } catch (error) {
       setError("Error deleting post:", error);
     }
   };
-
+  
   return (
     <div className="py-10 px-20">
       <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center">

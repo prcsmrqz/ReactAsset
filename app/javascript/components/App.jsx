@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
 import Home from "./Home";
-import Dashboard from "./Dashboard";
 import Post from "./Post";
 import Form from "./post/Form";
 import ShowForm from "./post/ShowForm";
@@ -22,7 +21,6 @@ axios.defaults.headers.common["X-CSRF-Token"] = getCsrfToken();
 axios.defaults.withCredentials = true; // allow sending cookies for authentication
 
 const App = (props) => {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Check if the user is logged in and set the state to true if yes
@@ -60,11 +58,13 @@ const App = (props) => {
       console.error("Failed to refresh CSRF token:", error);
     }
   };
+  
 
   // Refresh token after login, then set current user is login
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
-    refreshCsrfToken(); 
+    refreshCsrfToken();
+
   };
   // Refresh token after logout, then set the user is logout
   const handleLogout = () => {
@@ -91,7 +91,6 @@ const App = (props) => {
       <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} refreshCsrfToken={refreshCsrfToken} />
       <Routes>
         {/* check if the user is login, if yes then it return the element if not the authentication error */}
-        <Route path="/dashboard" element={pageCheck(isAuthenticated, <Dashboard />)} />
         <Route path="/post" element={pageCheck(isAuthenticated, <Post />)} />
         <Route path="/edit/:id" element={pageCheck(isAuthenticated, <Form />)} />
         <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />

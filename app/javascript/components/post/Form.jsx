@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
+import showAlert from "../Alert";
 
 const Form = () => {
   // enable the redirection after form submission
@@ -38,12 +38,16 @@ const Form = () => {
       // if theres an id update, else create
       if (id) {
         await axios.put(`/posts/${id}`, { post: { title, body } });
+        showAlert("Saved!", "Post updated successfully", "success", "save");
       } else {
         await axios.post("/posts", { post: { title, body } });
+        showAlert("Saved!", "Post created successfully", "success", "save");
       }
       //redirect to post.jsx after creating / updating
       navigate("/post");
     } catch (error) {
+        const status = id ? "Updating" : "Creating";
+        showAlert("Error " + status + " Post!", "Please check all the information", "error");
       // if theres an error it will set the errors and show it after submit
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);

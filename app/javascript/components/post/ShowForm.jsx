@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import showAlert from "../Alert";
 
 const ShowForm = () => {
   const { id } = useParams();
@@ -44,7 +45,9 @@ const ShowForm = () => {
       setComments([...comments, response.data]);
       setCommenter("");
       setCommentBody("");
+      showAlert("Saved!", "Comment created successfully", "success", "save");
     } catch (error) {
+      showAlert("Error Creating Comments!", "Please check all the information", "error");
       if (error.response && error.response.data.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -52,20 +55,28 @@ const ShowForm = () => {
       }
     }
   };
-  const deleteComment = async (id, cid) => {
 
-    //show an alert if yes, then proceed to delete comment if not return
-    const confirmDelete = window.confirm("Are you sure you want to delete this comment?");
-    if (!confirmDelete) return;
+  //delete post getting the id
+  const deleteComment = async (id, cid) => {
+  
+    // Wait for the confirmation of sweet alert to resolve
+    const result = await showAlert("Are you sure?", "You won't be able to revert this comment!", "warning", "delete");
+  
+    
+    if (!result.isConfirmed) return;
   
     try {
       // API request to delete comment, we use id for posts and cid for comment_id to delete
       await axios.delete(`/posts/${id}/comments/${cid}`); 
       setComments(comments.filter((c) => c.id !== cid)); // Remove deleted comment from state, creates new array that exclude the deleted comment
+  
+      // Show success alert after deletion
+      showAlert("Deleted!", "Comment deleted successfully", "success");
     } catch (error) {
-      console.error("Error deleting post:", error);
+      setError("Error deleting comment:", error);
     }
   };
+
 
   return (
     <div className="py-10 px-20">
