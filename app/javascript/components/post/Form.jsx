@@ -17,8 +17,9 @@ const Form = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`/posts/${id}`);
-        setTitle(response.data.title);
-        setBody(response.data.body);
+        setTitle(response.data.post.title);
+        setBody(response.data.post.body);
+        
       } catch (error) {
         console.error("Error fetching post:", error);
       }

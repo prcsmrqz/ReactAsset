@@ -36,6 +36,10 @@ INSTALL YARN
 npm install -g yarn
 yarn -v
 
+yarn add @heroicons/react
+yarn add sweetalert2
+
+
 
 INSTALL REACT USING REACT-RAILS
 

@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
         @post = Post.find(params[:post_id])
         @comment = @post.comments.build(comment_params)
         @comment.user = current_user
+        @comment.commenter = current_user.first_name + " " + current_user.last_name
 
         if @comment.save
             render json: @comment, status: :created
@@ -27,12 +28,15 @@ class CommentsController < ApplicationController
     private
     def set_user
         @user = current_user
-      rescue ActiveRecord::RecordNotFound
-        render json: { error: "User not found" }, status: :not_found
-    end
+      
+        unless @user
+          render json: { error: "User not found" }, status: :not_found
+        end
+      end
+      
 
     def comment_params
-        params.require(:comment).permit(:commenter, :body)
+        params.require(:comment).permit(:body)
     end
 
 end

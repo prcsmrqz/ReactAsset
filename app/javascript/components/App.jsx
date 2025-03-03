@@ -20,7 +20,7 @@ const getCsrfToken = () => {
 axios.defaults.headers.common["X-CSRF-Token"] = getCsrfToken();
 axios.defaults.withCredentials = true; // allow sending cookies for authentication
 
-const App = (props) => {
+const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Check if the user is logged in and set the state to true if yes
@@ -87,21 +87,26 @@ const App = (props) => {
 
   return (
     <Router>
-      {/* Show navbar even if the user is login or logout */}
-      <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} refreshCsrfToken={refreshCsrfToken} />
-      <Routes>
-        {/* check if the user is login, if yes then it return the element if not the authentication error */}
-        <Route path="/post" element={pageCheck(isAuthenticated, <Post />)} />
-        <Route path="/edit/:id" element={pageCheck(isAuthenticated, <Form />)} />
-        <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />
-        <Route path="/create" element={pageCheck(isAuthenticated, <Form />)} />
+      <div className={`flex h-screen ${isAuthenticated ? "" : "flex-col"}`}>
+  {/* Navbar will be a sidebar if logged in, and a top bar if logged out */}
+  <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} refreshCsrfToken={refreshCsrfToken} />
 
+  {/* Ensure the content area takes the full width if not authenticated */}
+  <div className={`flex-1 transition-all duration-300 p-6 ${!isAuthenticated ? "w-full" : ""}`}>
+    <Routes>
+      <Route path="/post" element={pageCheck(isAuthenticated, <Post />)} />
+      <Route path="/edit/:id" element={pageCheck(isAuthenticated, <Form />)} />
+      <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />
+      <Route path="/create" element={pageCheck(isAuthenticated, <Form />)} />
 
-        {/* Used when user is not login */}
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Registration />} />
-        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} refreshCsrfToken={refreshCsrfToken} />} />
-      </Routes>
+      {/* Used when user is not logged in */}
+      <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<Registration />} />
+      <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} refreshCsrfToken={refreshCsrfToken} />} />
+    </Routes>
+  </div>
+</div>
+
     </Router>
   );
 };
