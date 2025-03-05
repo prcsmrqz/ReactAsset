@@ -62,7 +62,7 @@ const Post = () => {
   };
   
   return (
-    <div className="py-10 px-10">
+    <div className="py-10 ">
       <h1 className="text-2xl md:text-3xl lg:text-4xl mb-5 font-bold text-center">
         CRUD App with React-Rails
       </h1>
@@ -71,88 +71,76 @@ const Post = () => {
       </Link>
       <br />
       <br />
-
-      <table className="table-auto border-collapse w-full text-center border-b border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th scope="col" className="px-4 py-2">Title</th>
-            <th scope="col" className="px-4 py-2">Body</th>
-            <th scope="col" className="w-auto min-w-max">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(posts) && posts.length > 0 ? (
-            posts.map((p) => (
-              <tr key={p.id} className="border-b border-gray-300">
-                <td scope="row" className="px-4 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
-                  <strong>{p.title}</strong>
-                </td>
-                <td scope="row" className="px-4 py-2 whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">
-                  {p.body}
-                </td>
-                {/* Actions column */}
-                <td scope="row" className="w-auto min-w-max text-center">
-                  <div className="flex gap-2 items-center justify-center">
-                    <Link to={`/show/${p.id}`} className="hover:bg-blue-600 text-white bg-blue-500 p-1 px-3 shadow-sm rounded flex items-center justify-center">
-                      <EyeIcon className="h-5 w-5" />
-                    </Link>
-                    {p.user_id == currentUser.id && (
-                      <>
-                        <Link to={`/edit/${p.id}`} className="hover:bg-orange-600 text-white bg-orange-500 p-1 px-3 shadow-sm rounded flex items-center justify-center">
-                          <PencilSquareIcon className="h-5 w-5" />
-                        </Link>
-                        <button className="hover:bg-red-600 text-white bg-red-500 p-1 px-3 shadow-sm rounded flex items-center justify-center" onClick={() => deletePost(p.id)}>
-                          <TrashIcon className="h-5 w-5" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </td>
+      <div className="w-full flex justify-center overflow-x-auto">
+          <table className="table-auto border-collapse w-full sm:max-w-md md:max-w-2xl lg:max-w-7xl text-center border-b border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th scope="col" className="px-4 py-2">Title</th>
+                <th scope="col" className="px-4 py-2">Body</th>
+                <th scope="col" className="px-4 py-2">Actions</th>
               </tr>
-            ))
-          ) : (
-            <tr className="border-b border-gray-300">
-              <td colSpan="3" className="px-4 py-2">No posts available.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {Array.isArray(posts) && posts.length > 0 ? (
+                posts.map((p) => (
+                  <tr key={p.id} className="border-b border-gray-300">
+                    <td className="px-2 py-2 break-words sm:max-w-[120px] md:max-w-[200px] lg:max-w-[300px]">
+                      <strong>{p.title}</strong>
+                    </td>
+                    <td className="px-2 py-2 break-words sm:max-w-[150px] md:max-w-[250px] lg:max-w-[400px]">
+                      {p.body}
+                    </td>
+                    <td className="px-2 py-2">
+                      <div className="flex gap-2 items-center justify-center">
+                        <Link to={`/show/${p.id}`} className="hover:bg-blue-600 text-white bg-blue-500 p-1 px-3 shadow-sm rounded">
+                          <EyeIcon className="h-5 w-5" />
+                        </Link>
+                        {p.user_id === currentUser.id && (
+                          <>
+                            <Link to={`/edit/${p.id}`} className="hover:bg-orange-600 text-white bg-orange-500 p-1 px-3 shadow-sm rounded">
+                              <PencilSquareIcon className="h-5 w-5" />
+                            </Link>
+                            <button className="hover:bg-red-600 text-white bg-red-500 p-1 px-3 shadow-sm rounded" onClick={() => deletePost(p.id)}>
+                              <TrashIcon className="h-5 w-5" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className="border-b border-gray-300">
+                  <td colSpan="3" className="px-4 py-2">No posts available.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      {/* Pagination */}
-      <div className="flex flex-col sm:flex-row justify-center items-center mt-4 gap-2 sm:gap-4">
-        {/* Previous Button */}
-        <button
-          className={`px-4 py-2 rounded ${
-            pagination.prevPage
-              ? "bg-gray-500 hover:bg-gray-600 text-white"
-              : "bg-gray-200 cursor-not-allowed"
-          }`}
-          onClick={() => fetchPosts(pagination.prevPage)}
-          disabled={!pagination.prevPage}
-        >
+
+    {(pagination.nextPage || pagination.prevPage) && (
+<>
+    {/* Pagination */}
+      <div className="flex flex-wrap justify-center items-center mt-4 gap-2 sm:gap-4">
+        <button className={`px-5 py-3 text-base rounded ${pagination.prevPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed"}`}
+          onClick={() => fetchPosts(pagination.prevPage)} disabled={!pagination.prevPage}>
           Previous
         </button>
 
-        {/* Page Info */}
         <span className="text-lg font-semibold text-center">
           Page {pagination.currentPage} of {pagination.totalPages}
         </span>
 
-        {/* Next Button */}
-        <button
-          className={`px-4 py-2 rounded ${
-            pagination.nextPage
-              ? "bg-gray-500 hover:bg-gray-600 text-white"
-              : "bg-gray-200 cursor-not-allowed"
-          }`}
-          onClick={() => fetchPosts(pagination.nextPage)}
-          disabled={!pagination.nextPage}
-        >
+        <button className={`px-5 py-3 text-base rounded ${pagination.nextPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed" }`}
+          onClick={() => fetchPosts(pagination.nextPage)} disabled={!pagination.nextPage}>
           Next
         </button>
       </div>
-
-    </div>
+      </>
+    )
+  }
+  </div>
   );
 };
 

@@ -8,6 +8,10 @@ import Form from "./post/Form";
 import ShowForm from "./post/ShowForm";
 import Login from "./devise/Login";
 import Registration from "./devise/Registration";
+import Footer from "./Footer";
+import RightNavbar from "./NavLR/RightNavbar";
+import LandingPage from "./LandingPage";
+
 
 //it protects from cross site request forgery, rails protect csrf attack by requiring a token for a non-GET requests
 // it retrieves token from meta tag in application.html.erb
@@ -86,28 +90,39 @@ const App = () => {
   };
 
   return (
+    
+    <>
     <Router>
-      <div className={`flex h-screen ${isAuthenticated ? "" : "flex-col"}`}>
-  {/* Navbar will be a sidebar if logged in, and a top bar if logged out */}
-  <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} refreshCsrfToken={refreshCsrfToken} />
+      <div className={`flex h-screen  ${isAuthenticated ? "" : "flex-col"}`}>
+        {/* Navbar will be a sidebar if logged in, and a top bar if logged out */}
+        <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} refreshCsrfToken={refreshCsrfToken} />
 
-  {/* Ensure the content area takes the full width if not authenticated */}
-  <div className={`flex-1 transition-all duration-300 p-6 ${!isAuthenticated ? "w-full" : ""}`}>
-    <Routes>
-      <Route path="/post" element={pageCheck(isAuthenticated, <Post />)} />
-      <Route path="/edit/:id" element={pageCheck(isAuthenticated, <Form />)} />
-      <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />
-      <Route path="/create" element={pageCheck(isAuthenticated, <Form />)} />
+        {/* Ensure the content area takes the full width if not authenticated */}
+        <div className={`flex-1 transition-all duration-300 p-6${!isAuthenticated ? "w-full" : ""}`}>
+          <Routes>
+            
+            <Route path="/home" element={pageCheck(isAuthenticated,<Home />)} />
+            <Route path="/post" element={pageCheck(isAuthenticated, <Post />)} />
+            <Route path="/edit/:id" element={pageCheck(isAuthenticated, <Form />)} />
+            <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />
+            <Route path="/create" element={pageCheck(isAuthenticated, <Form />)} />
 
-      {/* Used when user is not logged in */}
-      <Route path="/" element={<Home />} />
-      <Route path="/signup" element={<Registration />} />
-      <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} refreshCsrfToken={refreshCsrfToken} />} />
-    </Routes>
-  </div>
-</div>
+            {/* Used when user is not logged in */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/signup" element={<Registration />} />
+            <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} refreshCsrfToken={refreshCsrfToken} />} />
+          </Routes>
+        </div>
+        {isAuthenticated && (
+          <div className="w-1/5  p-4 hidden md:block">
+            <RightNavbar />
+          </div>
+        )}
 
+      {!isAuthenticated && ( <Footer /> )}
+      </div>
     </Router>
+    </>
   );
 };
 

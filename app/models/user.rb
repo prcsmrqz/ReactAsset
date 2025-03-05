@@ -7,11 +7,12 @@ class User < ApplicationRecord
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  validates :first_name, :last_name, :birthday, presence: true
 
   validate :first_last_name
   validate :email_regex
+
+  validate :age_is_16_above
 
   validates :password, confirmation: true
 
@@ -20,6 +21,13 @@ class User < ApplicationRecord
   def email_regex
     if email.present? && (email.match(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]{3,}\z/i).nil?)
       errors.add(:email, "must be a valid email address")
+    end
+  end
+
+  #validate age if 16 above
+  def age_is_16_above
+    if birthday.present? && birthday > 16.years.ago.to_date
+      errors.add(:base, "Date of birth must be at least 16 years old")
     end
   end
 

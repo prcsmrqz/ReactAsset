@@ -10,8 +10,10 @@ const Registration = () => {
   const [password_confirmation, setconfirmPassword] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [firstNameErrors, setfirstNameErrors] = useState([]);
   const [lastNameErrors, setlastNameErrors] = useState([]);
+  const [birthdayErrors, setbirthdayErrors] = useState([]);
   const [emailErrors, setEmailErrors] = useState([]);
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [confirmationPasswordErrors, setConfirmationPasswordErrors] = useState([]);
@@ -25,7 +27,7 @@ const Registration = () => {
     setConfirmationPasswordErrors([]);
 
     try {
-        await axios.post("/users", { user: { first_name, last_name, email, password, password_confirmation } });
+        await axios.post("/users", { user: { first_name, last_name, birthday, email, password, password_confirmation } });
         showAlert("Registered!", "Account created successfully", "success", "save");
         navigate("/login");
     } catch (error) {
@@ -38,6 +40,9 @@ const Registration = () => {
         const lastNameErrors = error.response.data.errors.filter(err => err.toLowerCase().includes("last name"));
         setlastNameErrors(lastNameErrors);
 
+        const birthdayErrors = error.response.data.errors.filter(err => err.toLowerCase().includes("date of birth"));
+        setbirthdayErrors(birthdayErrors);
+
         const emailErrors = error.response.data.errors.filter(err => err.toLowerCase().includes("email"));
         setEmailErrors(emailErrors);
 
@@ -46,7 +51,7 @@ const Registration = () => {
 
         const confirmationPasswordErrors = error.response.data.errors.filter(err => err.toLowerCase().includes("password confirmation"));
         setConfirmationPasswordErrors(confirmationPasswordErrors);
-        
+        console.log(error.response.data);
       } else {  
         console.error("Error submitting post:", error);
       }
@@ -54,7 +59,8 @@ const Registration = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] p-4">
+    <div className="flex justify-center items-center min-h-[75vh] ">
+     
       <div className="w-full max-w-xl bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <h3 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           Create an Account
@@ -81,6 +87,15 @@ const Registration = () => {
                   <div className="text-xs text-red-500 mt-1"> {lastNameErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
                 )}
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-white"> Date of Birth </label>
+            <input type="date" value={birthday} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
+              onChange={(e) => setBirthday(e.target.value)} />
+              {birthdayErrors.length > 0 && (
+                  <div className="text-xs text-red-500 mt-1"> {birthdayErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
+              )}
           </div>
 
           <div>
@@ -116,9 +131,10 @@ const Registration = () => {
             Register Account
           </button>
 
-          <div className="text-center mt-4">
-            <a href="#" className="text-sm text-blue-500 hover:underline"> Forgot Password? </a>
-          </div>
+          
+          <p className="text-gray-600 text-sm mt-4 text-center"> Already have an account?{" "}
+             <Link to="/login" className="text-blue-500 hover:underline font-medium"> Login </Link>
+          </p>
         </form>
       </div>
     </div>

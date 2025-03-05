@@ -23,3 +23,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(<App />);
 });
+
+require("@rails/actiontext")

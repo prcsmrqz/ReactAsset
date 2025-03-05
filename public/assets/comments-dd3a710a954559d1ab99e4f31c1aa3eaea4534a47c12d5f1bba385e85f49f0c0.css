@@ -1,0 +1,23 @@
+/* line 1, app/assets/stylesheets/waves.css */
+.custom-shape-divider-bottom-1741065803 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+/* line 11, app/assets/stylesheets/waves.css */
+.custom-shape-divider-bottom-1741065803 svg {
+  position: relative;
+  display: block;
+  width: calc(140% + 1.3px);
+  height: 282px;
+}
+
+/* line 18, app/assets/stylesheets/waves.css */
+.custom-shape-divider-bottom-1741065803 .shape-fill {
+  fill: #FFCFED;
+}
