@@ -1,23 +1,81 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import showAlert from "./Alert";
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon, BookmarkIcon, MagnifyingGlassIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";
+import { BookmarkIcon as BookmarkIconSolid } from "@heroicons/react/24/solid";
 
 function Home() {
   const [activeTab, setActiveTab] = useState("forYou");
   const [posts, setPosts] = useState([]);
+  const [readingList, setReadingList] = useState([]);
+  const [errors, setErrors] = useState([]);
   const [currentUser, setcurrentUser] = useState([]);
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, nextPage: null, prevPage: null });
 
-  useEffect(() => { fetchPosts(); }, []);
-
+  useEffect(() => { 
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`/posts`);
-      
       setPosts(response.data.posts);
       setcurrentUser(response.data.current_user);
     } catch (error) { console.error("Error fetching posts:", error); }
+    }
+    fetchPosts(); 
+  }, []);
+
+  useEffect(() => {
+    const fetchReadingList = async () => {
+        const response = await axios.get("/reading_lists");
+        
+        setReadingList(response.data);
+    };
+
+      fetchReadingList();
+  }, []);
+
+
+  const addReadingList = async (postid) => {
+    setErrors([]);
+
+    try {
+      // save comment
+      const response = await axios.post(`/reading_lists`, {
+        reading_list: { post_id: postid },
+      });
+      
+      showAlert("Saved!", "Added to reading list", "success", "save");
+      setReadingList([...readingList, response.data.reading_list]);
+    } catch (error) {
+      showAlert("Error Adding Reading List!", error.response.data.errors, "error");
+      if (error.response && error.response.data.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        console.error("Error submitting comment:", error);
+      }
+    }
+  };
+
+  const deleteReadingList = async (id) => {
+    setErrors([]);
+    console.log(id);
+    // Wait for the confirmation of sweet alert to resolve
+    const result = await showAlert("Remove from reading list?", "Are you sure you want to remove from reading list?", "warning", "delete");
+  
+    // If user cancels, stop the deletion process
+    if (!result.isConfirmed) return;
+  
+    try {
+      await axios.delete(`/reading_lists/${id}`); 
+      setReadingList(readingList.filter(rl => rl.id !== id));
+  
+      // Show success alert after deletion
+      showAlert("Successfully Removed!", "Removed from reading list", "success");
+      console.log("remove" + readingList);
+    } catch (error) {
+      console.log(error);
+            setErrors("Error deleting post:", error);
+    }
   };
 
   return (
@@ -79,8 +137,9 @@ function Home() {
                         <span>{p.comments.length}</span>
                       </Link>
                     </div>
-                    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-                      <BookmarkIcon className="h-7 w-7" />
+                    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => {const rl = readingList.find(rl => rl.post_id === p.id);
+                                                                                                        rl ? deleteReadingList(rl.id) : addReadingList(p.id)}}>
+                      {readingList.map(rl => rl.post_id).includes(p.id) ? <BookmarkIconSolid className="h-7 w-7 text-black" /> : <BookmarkIcon className="h-7 w-7" /> }
                     </button>
                   </div>
                 </div>

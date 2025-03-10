@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get "/users/check_auth", to: "users/sessions#check_auth"
   end
 
+  resources :reading_lists
   resources :posts do
     resources :comments
   end

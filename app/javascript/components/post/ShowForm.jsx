@@ -183,7 +183,7 @@ const ShowForm = () => {
                 <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
                   Comment
                 </button>
-                <Link to="/post"className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold transition text-center">
+                <Link to="/home"className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-semibold transition text-center">
                   Back
                 </Link>
               </div>
