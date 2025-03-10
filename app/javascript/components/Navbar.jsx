@@ -3,8 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import showAlert from "./Alert";
 import CurrentUser from "./devise/CurrentUser";
-import { DocumentTextIcon, UserCircleIcon, HomeIcon, ArrowLeftStartOnRectangleIcon, UserIcon, BellIcon, BookmarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { DocumentTextIcon as DocumentTextIconSolid, HomeIcon as HomeIconSolid, BellIcon as BellIconSolid, UserIcon as UserSolid, UserGroupIcon as UserGroupIconSolid, BookmarkIcon as BookMmrkIconSolid  } from "@heroicons/react/24/solid";
+import { DocumentTextIcon, UserCircleIcon, HomeIcon, ArrowLeftStartOnRectangleIcon, UserIcon, BellIcon, BookmarkIcon, MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { DocumentTextIcon as DocumentTextIconSolid, HomeIcon as HomeIconSolid, BellIcon as BellIconSolid, UserIcon as UserSolid, UserGroupIcon as UserGroupIconSolid, BookmarkIcon as BookMarkIconSolid, PencilSquareIcon as PencilSquareIconSolid  } from "@heroicons/react/24/solid";
 
 
 export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) {
@@ -59,7 +59,7 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
   if (!isAuthenticated) {
     return (
       <div className="w-full bg-white border-b border-gray-300 text-black flex justify-between items-center p-4">
-        <Link to="/" className="text-xl font-bold">Article App</Link>
+        <Link to="/" className="text-xl font-bold">Blog App</Link>
         <div className="flex gap-4">
           {!(location.pathname === "/signup" || location.pathname === "/login") && (
             <Link to="/login" className="hover:bg-gray-200 p-2 rounded-md">Login</Link>
@@ -69,6 +69,40 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
     );
   }
 
+  if (location.pathname === "/create" || location.pathname.startsWith("/edit/") || location.pathname.startsWith("/show/")) {
+    return (
+      <div className="w-full fixed top-0 left-0 bg-white border-b border-gray-300 text-black flex justify-between items-center p-4 z-50">
+        <Link to="/home" className="text-xl font-bold">Blog App</Link>
+        <div className="relative profile-dropdown">
+          <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center w-full text-black rounded-md transition">
+            <UserCircleIcon className="h-10 w-10 text-black rounded-full" />
+            {!isSmallScreen && (
+              <div className="ml-3 text-left">
+                <p className="text-sm font-semibold">{user ? user.first_name + " " + user.last_name : "Guest"}</p>
+              </div>
+            )}
+          </button>
+          
+          {isProfileOpen && (
+           <div className="absolute top-full top-full right-0 -translate-x-[3%] min-w-[200px] w-[90%] max-w-[250px] bg-white border border-gray-300 rounded-md shadow-lg p-1">
+            <Link to="/profile" className="w-full flex items-center text-black hover:bg-gray-200 px-3 py-2 rounded-md text-sm">
+              <UserIcon className="h-5 w-5 mr-2" />Profile
+            </Link>
+            <Link onClick={handleLogout} className="w-full flex items-center text-black hover:bg-gray-200 px-3 py-2 rounded-md text-sm">
+              <BookmarkIcon className="h-5 w-5 mr-2" /> Reading List
+            </Link>
+            <button onClick={handleLogout} className="w-full flex items-center text-black hover:bg-gray-200 px-3 py-2 rounded-md text-sm">
+              <ArrowLeftStartOnRectangleIcon className="h-5 w-5 mr-2" /> Log out
+            </button>
+          </div>
+         
+          )}
+
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -76,16 +110,7 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
         ${isSmallScreen ? "w-16" : "w-64"}`}>
 
         <nav className="flex flex-col gap-4 p-2 mt-12 flex-1">
-        <div className="flex items-center border border-gray-300 rounded-2xl p-4 focus-within:ring-2 focus-within:ring-blue-400 dark:border-neutral-600">
-      <MagnifyingGlassIcon className="w-5 h-5 text-gray-500 dark:text-neutral-200" />
-      <input
-        type="search"
-        id="search"
-        className="w-full bg-transparent px-3 py-1 text-base text-gray-700 outline-none dark:text-neutral-200 dark:placeholder:text-neutral-400"
-        placeholder="Type query"
-        aria-label="Search"
-      />
-    </div>
+       
           <Link to="/home" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/" ? "font-bold" : "text-black"}`}>
             {location.pathname === "/home" ? ( <HomeIconSolid className="h-5 w-5" /> ) : ( <HomeIcon className="h-5 w-5" /> )}
             {!isSmallScreen && <span className="ml-3">Home</span>}
@@ -97,7 +122,7 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
           </Link>
 
           <Link to="/readinglist" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/readinglist" ? "font-bold" : "text-black"}`}>
-          {location.pathname === "/readinglist" ? ( <BookMmrkIconSolid className="h-5 w-5" /> ) : ( <BookmarkIcon className="h-5 w-5" /> )}
+          {location.pathname === "/readinglist" ? ( <BookMarkIconSolid className="h-5 w-5" /> ) : ( <BookmarkIcon className="h-5 w-5" /> )}
             {!isSmallScreen && <span className="ml-3">Reading List</span>}
           </Link>
 
@@ -109,6 +134,10 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
           <Link to="/profile" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/profile" ? "font-bold" : "text-black"}`}>
           {location.pathname === "/profile" ? ( <UserSolid className="h-5 w-5" /> ) : ( <UserIcon className="h-5 w-5" /> )}
             {!isSmallScreen && <span className="ml-3">Profile</span>}
+          </Link>
+          <Link to="/create" className="flex items-center p-2 transition w-full bg-black text-white rounded-3xl justify-center">
+          {location.pathname === "/create" ? ( <PencilSquareIconSolid className="h-5 w-5" /> ) : ( <PencilSquareIcon className="h-5 w-5" /> )}
+            {!isSmallScreen && <span className="ml-3">Create</span>}
           </Link>
         </nav>
 

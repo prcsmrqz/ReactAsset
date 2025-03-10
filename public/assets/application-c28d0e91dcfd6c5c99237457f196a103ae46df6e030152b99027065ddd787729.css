@@ -10,17 +10,20 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
- *= require_self
+
+
  */
  body {
-  font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-.font-helvetica {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
+    font-family: 'Poppins', sans-serif;
 
-
+  }
+  body input {
+    @apply w-full p-2 border border-gray-300 dark:border-gray-600 
+    rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 
+    focus:border-blue-400 dark:bg-gray-700 dark:text-white;
+  }
+  
+  
   @media (max-width: 768px) {
     .navbar {
       position: fixed;

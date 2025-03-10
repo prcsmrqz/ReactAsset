@@ -19,7 +19,7 @@ const Login = ({ onLoginSuccess, refreshCsrfToken }) => {
           const response = await axios.get("/users/check_auth");
           if (response.data.logged_in) {
             onLoginSuccess();
-            navigate("/post");
+            navigate("/home");
           }
         } catch (err) {
           console.log("Not logged in");

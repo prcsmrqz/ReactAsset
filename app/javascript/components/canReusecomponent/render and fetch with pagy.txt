@@ -1,0 +1,71 @@
+POST CONTROLLER
+  def index
+    # @pagy, @posts = pagy(@user.posts.order(created_at: :desc), items: 5) # Set per user
+    @pagy, @posts = pagy(Post.order(created_at: :desc), items: 5) # Set items per page
+    render json: {
+      #get posts and pages that sends to the react component
+      #left will be the variable that use to access in react component
+      #right the valus that will be passed
+      posts: @posts.as_json(
+        include: { user: { only: [:id, :first_name, :last_name] } },
+        methods: [:coverimg_url] # Ensure coverimg_url is included
+      ),
+      page: @pagy.page,
+      pages: @pagy.pages,
+      next: @pagy.next ? @pagy.next : nil,
+      prev: @pagy.prev ? @pagy.prev : nil,
+      current_user: @user ? @user.as_json(only: [:id, :first_name, :last_name, :email]) : {}
+    }
+  end
+
+PAGE BUTTONS
+ {(pagination.nextPage || pagination.prevPage) && (
+<>
+    {/* Pagination */}
+      <div className="flex flex-wrap justify-center items-center mt-4 gap-2 sm:gap-4">
+        <button className={`px-5 py-3 text-base rounded ${pagination.prevPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed"}`}
+          onClick={() => fetchPosts(pagination.prevPage)} disabled={!pagination.prevPage}>
+          Previous
+        </button>
+
+        <span className="text-lg font-semibold text-center">
+          Page {pagination.currentPage} of {pagination.totalPages}
+        </span>
+
+        <button className={`px-5 py-3 text-base rounded ${pagination.nextPage ? "bg-gray-500 hover:bg-gray-600 text-white" : "bg-gray-200 cursor-not-allowed" }`}
+          onClick={() => fetchPosts(pagination.nextPage)} disabled={!pagination.nextPage}>
+          Next
+        </button>
+      </div>
+      </>
+    )
+    
+RETRIEVE DATA WITH PAGES 
+
+//set the pagination details, use 1 for currentPage and totalPages to have a default value
+  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, nextPage: null, prevPage: null, });
+
+  // Fetch the first page of posts from the controller when the component mount
+  useEffect(() => {
+    fetchPosts(1);
+  }, []);
+
+  //fetch post from controller
+  //set page to 1 to get the first page
+  const fetchPosts = async (page = 1) => {
+    try {
+      const response = await axios.get(`/posts?page=${page}`);
+      //set the fetch post to setPosts
+      setPosts(response.data.posts);
+      setcurrentUser(response.data.current_user);
+      setPagination({
+        currentPage: response.data.page,
+        totalPages: response.data.pages,
+        nextPage: response.data.next,
+        prevPage: response.data.prev,
+      });
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+

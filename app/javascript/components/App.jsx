@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
 import Home from "./Home";
@@ -25,7 +25,20 @@ axios.defaults.headers.common["X-CSRF-Token"] = getCsrfToken();
 axios.defaults.withCredentials = true; // allow sending cookies for authentication
 
 const App = () => {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+};
+const AppContent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  const location = useLocation(); 
+
+  useEffect(() => {
+    console.log("Current Path:", location.pathname);
+  }, [location.pathname]);
 
   // Check if the user is logged in and set the state to true if yes
   useEffect(() => {
@@ -35,7 +48,7 @@ const App = () => {
           setIsAuthenticated(true);
         }
       })
-      .catch(() => setIsAuthenticated(false));
+      .catch(() => setIsAuthenticated(false))
   }, []);
 
   // Refresh CSRF token after login / logout, it must be 1 session for 1 token
@@ -90,9 +103,6 @@ const App = () => {
   };
 
   return (
-    
-    <>
-    <Router>
       <div className={`flex h-screen  ${isAuthenticated ? "" : "flex-col"}`}>
         {/* Navbar will be a sidebar if logged in, and a top bar if logged out */}
         <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} refreshCsrfToken={refreshCsrfToken} />
@@ -105,6 +115,7 @@ const App = () => {
             <Route path="/post" element={pageCheck(isAuthenticated, <Post />)} />
             <Route path="/edit/:id" element={pageCheck(isAuthenticated, <Form />)} />
             <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />
+            
             <Route path="/create" element={pageCheck(isAuthenticated, <Form />)} />
 
             {/* Used when user is not logged in */}
@@ -113,16 +124,17 @@ const App = () => {
             <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} refreshCsrfToken={refreshCsrfToken} />} />
           </Routes>
         </div>
-        {isAuthenticated && (
-          <div className="w-1/5  p-4 hidden md:block">
+        {isAuthenticated &&
+        !location.pathname.startsWith("/edit/") &&
+        location.pathname !== "/create" &&
+        !location.pathname.startsWith("/show/") && (
+          <div className="w-1/5 p-4 hidden md:block" key={location.pathname}>
             <RightNavbar />
           </div>
         )}
 
       {!isAuthenticated && ( <Footer /> )}
       </div>
-    </Router>
-    </>
   );
 };
 

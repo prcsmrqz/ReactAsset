@@ -12,7 +12,7 @@ const showAlert = (title, message, icon, type) => {
       confirmButtonText: type === "delete" ? "Yes, delete it!" : "Yes, logout!",
     });
   }
-  else if (type === "question") {
+  else if (type === "remove" || type === "discard") {
     return Swal.fire({
       title: title,
       text: message,
@@ -20,7 +20,7 @@ const showAlert = (title, message, icon, type) => {
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, discard it!",
+      confirmButtonText: type === "discard" ? "Yes, discard it!" : "Yes, remove it!",
     });
   }
 

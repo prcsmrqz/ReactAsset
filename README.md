@@ -51,3 +51,5 @@ rails g react:install
 
 create component
 rails g react:component NameofComponent propsName:propsDataType
+
+rails active_storage:install

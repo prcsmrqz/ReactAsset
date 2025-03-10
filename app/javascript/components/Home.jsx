@@ -1,463 +1,98 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom"; 
-import { ChatBubbleLeftRightIcon, HandThumbUpIcon, BookmarkIcon } from '@heroicons/react/24/outline';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { ChatBubbleLeftRightIcon, HandThumbUpIcon, BookmarkIcon, MagnifyingGlassIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";
 
 function Home() {
   const [activeTab, setActiveTab] = useState("forYou");
+  const [posts, setPosts] = useState([]);
+  const [currentUser, setcurrentUser] = useState([]);
+  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, nextPage: null, prevPage: null });
+
+  useEffect(() => { fetchPosts(); }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(`/posts`);
+      
+      setPosts(response.data.posts);
+      setcurrentUser(response.data.current_user);
+    } catch (error) { console.error("Error fetching posts:", error); }
+  };
 
   return (
     <>
+      <form className="max-w-2xl mx-auto mb-5">
+        <label htmlFor="search" className="sr-only">Search</label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <MagnifyingGlassIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </div>
+          <input type="search" id="search" placeholder="Search" className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-3xl focus:ring-gray-300 focus:border-gray-300 dark:bg-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none" required />
+        </div>
+      </form>
+
       <nav className="flex justify-center items-center gap-14 px-6 pb-6 mt-0">
-        <button
-          className={`mb-1 pb-2 border-b-4 ${
-            activeTab === "forYou" ? "border-blue-500" : "border-transparent"
-          }`}
-          onClick={() => setActiveTab("forYou")}
-        >
-          For You
-        </button>
-        <button
-          className={`mb-1 pb-2 border-b-4 ${
-            activeTab === "following" ? "border-blue-500" : "border-transparent"
-          }`}
-          onClick={() => setActiveTab("following")}
-        >
-          Following
-        </button>
+        <button className={`mb-1 pb-2 border-b-4 ${activeTab === "forYou" ? "border-blue-500" : "border-transparent"}`} onClick={() => setActiveTab("forYou")}>For You</button>
+        <button className={`mb-1 pb-2 border-b-4 ${activeTab === "following" ? "border-blue-500" : "border-transparent"}`} onClick={() => setActiveTab("following")}>Following</button>
       </nav>
-      <div className="min-h-screen flex flex-col pb-10">
-      {/* Center the Card */}
-      <div className="flex justify-center mb-5">
-        <div className="block max-w-5xl bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 pt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
 
-          {/* Left Side (Text Content) */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2">
-              {/* Small Image */}
-              <Link to="/profile" className="w-8 h-8 flex-shrink-0">
-                <img
-                  className="rounded-full w-full h-full object-cover"
-                  src="/assets/img/image.png"
-                  alt="Profile"
-                />
-              </Link>
+      <div className="min-h-screen flex flex-col pb-10 items-center">
+        <div className="w-full max-w-4xl">
+          {Array.isArray(posts) && posts.length > 0 ? (
+            posts.map((p) => (
+              <div key={p.id} className="bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 flex flex-col-reverse md:flex-row gap-4 transition mb-4">
+                <div className="flex flex-col flex-grow">
+                  {/* Profile pic, name, and date */}
+                  <div className="flex items-center gap-2">
+                    <Link to="/profile" className="w-10 h-10 flex-shrink-0">
+                      <img className="rounded-full w-full h-full object-cover" src="/assets/img/image.png" alt="Profile" />
+                    </Link>
+                    <div className="flex flex-col">
+                      <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
+                        {p.user ? p.user.first_name + " " + p.user.last_name : "Unknown"}
+                      </Link>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(p.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                      </span>
+                    </div>
+                  </div>
 
-              {/* Author Name */}
-              <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
-                Mehdi BAFDIL
-              </Link>
-            </div>
-
-            <Link to="/post" className="block p-2">
-              <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white  line-clamp-1 hover:underline">
-                Express.js Secrets That Senior Developers Don’t Share
-              </h5>
-              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2">
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-              </p>
-            </Link>
-
-            {/* Icons & Actions */}
-            <div className=" flex items-center text-sm text-gray-500 dark:text-gray-400 w-full">
-  {/* Left-aligned items */}
-  <div className="flex items-center space-x-4 mt-1">
-    <span>⭐ Dec 3, 2024</span>
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
-      <HandThumbUpIcon className="h-5 w-5" />
-      <span>738</span>
-    </button>
-    <Link to="/post" className="flex items-center space-x-1 hover:text-blue-500">
-      <ChatBubbleLeftRightIcon className="h-5 w-5" />
-      <span>24</span>
-    </Link>
-  </div>
-
-  {/* Right-aligned Bookmark */}
-  <div className="ml-auto flex items-center space-x-4">
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-      <BookmarkIcon className="h-7 w-7" />
-    </button>
-  </div>
-</div>
-
-
-          </div>
-
-          {/* Right Side (Image) */}
-          <Link to="/post" className="w-full h-auto md:w-60 md:h-40 flex-shrink-0 mt-2">
-            <img
-              className="rounded-lg w-full h-full object-cover"
-              src="/assets/img/image.png"
-              alt="Express.js Image"
-            />
-          </Link>
+                  {/* Title and Body */}
+                  <Link to={`/show/${p.id}`} className="block mt-2">
+                    <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:underline text-justify line-clamp-2 break-all">{p.title}</h5>
+                    <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2 break-all">{p.description}</p>
+                  </Link>
+                    {/* Buttons */}
+                  <div className="flex items-center justify-between mt-auto pt-4 text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center space-x-4">
+                      <Link to={`/show/${p.id}`} className="flex items-center space-x-1 hover:text-blue-500 text-gray-500 mr-2">
+                        <span>Learn More</span>
+                        <ArrowLongRightIcon className="h-5 w-5" />
+                      </Link>
+                      <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
+                        <HandThumbUpIcon className="h-5 w-5" />
+                        <span>{p.likes_count}</span>
+                      </button>
+                      <Link to={`/show/${p.id}`}  className="flex items-center space-x-1 hover:text-blue-500">
+                        <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                        <span>{p.comments.length}</span>
+                      </Link>
+                    </div>
+                    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
+                      <BookmarkIcon className="h-7 w-7" />
+                    </button>
+                  </div>
+                </div>
+                <Link to={`/show/${p.id}`}  className="w-full  md:w-60 md:h-50 flex-shrink-0 mt-2 md:mt-0">
+                  <img className="rounded-lg w-full h-full object-cover" src={p.coverimg_url || "/assets/img/image.png"} alt="Post Image" />
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-600 dark:text-gray-400">No posts available.</p>
+          )}
         </div>
-      </div>
-        {/* Center the Card */}
-        <div className="flex justify-center mb-5">
-        <div className="block max-w-5xl bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 pt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-
-          {/* Left Side (Text Content) */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2">
-              {/* Small Image */}
-              <Link to="/profile" className="w-8 h-8 flex-shrink-0">
-                <img
-                  className="rounded-full w-full h-full object-cover"
-                  src="/assets/img/image.png"
-                  alt="Profile"
-                />
-              </Link>
-
-              {/* Author Name */}
-              <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
-                Mehdi BAFDIL
-              </Link>
-            </div>
-
-            <Link to="/post" className="block p-2">
-              <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-justify line-clamp-1 hover:underline">
-                Express.js Secrets That Senior Developers Don’t Share
-              </h5>
-              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2">
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-              </p>
-            </Link>
-
-            {/* Icons & Actions */}
-            <div className=" flex items-center text-sm text-gray-500 dark:text-gray-400 w-full">
-  {/* Left-aligned items */}
-  <div className="flex items-center space-x-4 mt-1">
-    <span>⭐ Dec 3, 2024</span>
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
-      <HandThumbUpIcon className="h-5 w-5" />
-      <span>738</span>
-    </button>
-    <Link to="/post" className="flex items-center space-x-1 hover:text-blue-500">
-      <ChatBubbleLeftRightIcon className="h-5 w-5" />
-      <span>24</span>
-    </Link>
-  </div>
-
-  {/* Right-aligned Bookmark */}
-  <div className="ml-auto flex items-center space-x-4">
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-      <BookmarkIcon className="h-7 w-7" />
-    </button>
-  </div>
-</div>
-
-
-          </div>
-
-          {/* Right Side (Image) */}
-          <Link to="/post" className="w-full h-auto md:w-60 md:h-40 flex-shrink-0 mt-2">
-            <img
-              className="rounded-lg w-full h-full object-cover"
-              src="/assets/img/image.png"
-              alt="Express.js Image"
-            />
-          </Link>
-        </div>
-      </div>
-        {/* Center the Card */}
-        <div className="flex justify-center mb-5">
-        <div className="block max-w-5xl bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 pt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-
-          {/* Left Side (Text Content) */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2">
-              {/* Small Image */}
-              <Link to="/profile" className="w-8 h-8 flex-shrink-0">
-                <img
-                  className="rounded-full w-full h-full object-cover"
-                  src="/assets/img/image.png"
-                  alt="Profile"
-                />
-              </Link>
-
-              {/* Author Name */}
-              <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
-                Mehdi BAFDIL
-              </Link>
-            </div>
-
-            <Link to="/post" className="block p-2">
-              <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-justify line-clamp-1 hover:underline">
-                Express.js Secrets That Senior Developers Don’t Share
-              </h5>
-              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2">
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-              </p>
-            </Link>
-
-            {/* Icons & Actions */}
-            <div className=" flex items-center text-sm text-gray-500 dark:text-gray-400 w-full">
-  {/* Left-aligned items */}
-  <div className="flex items-center space-x-4 mt-1">
-    <span>⭐ Dec 3, 2024</span>
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
-      <HandThumbUpIcon className="h-5 w-5" />
-      <span>738</span>
-    </button>
-    <Link to="/post" className="flex items-center space-x-1 hover:text-blue-500">
-      <ChatBubbleLeftRightIcon className="h-5 w-5" />
-      <span>24</span>
-    </Link>
-  </div>
-
-  {/* Right-aligned Bookmark */}
-  <div className="ml-auto flex items-center space-x-4">
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-      <BookmarkIcon className="h-7 w-7" />
-    </button>
-  </div>
-</div>
-
-
-          </div>
-
-          {/* Right Side (Image) */}
-          <Link to="/post" className="w-full h-auto md:w-60 md:h-40 flex-shrink-0 mt-2">
-            <img
-              className="rounded-lg w-full h-full object-cover"
-              src="/assets/img/image.png"
-              alt="Express.js Image"
-            />
-          </Link>
-        </div>
-      </div>
-        {/* Center the Card */}
-        <div className="flex justify-center mb-5">
-        <div className="block max-w-5xl bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 pt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-
-          {/* Left Side (Text Content) */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2">
-              {/* Small Image */}
-              <Link to="/profile" className="w-8 h-8 flex-shrink-0">
-                <img
-                  className="rounded-full w-full h-full object-cover"
-                  src="/assets/img/image.png"
-                  alt="Profile"
-                />
-              </Link>
-
-              {/* Author Name */}
-              <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
-                Mehdi BAFDIL
-              </Link>
-            </div>
-
-            <Link to="/post" className="block p-2">
-              <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-justify line-clamp-1 hover:underline">
-                Express.js Secrets That Senior Developers Don’t Share
-              </h5>
-              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2">
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-              </p>
-            </Link>
-
-            {/* Icons & Actions */}
-            <div className=" flex items-center text-sm text-gray-500 dark:text-gray-400 w-full">
-  {/* Left-aligned items */}
-  <div className="flex items-center space-x-4 mt-1">
-    <span>⭐ Dec 3, 2024</span>
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
-      <HandThumbUpIcon className="h-5 w-5" />
-      <span>738</span>
-    </button>
-    <Link to="/post" className="flex items-center space-x-1 hover:text-blue-500">
-      <ChatBubbleLeftRightIcon className="h-5 w-5" />
-      <span>24</span>
-    </Link>
-  </div>
-
-  {/* Right-aligned Bookmark */}
-  <div className="ml-auto flex items-center space-x-4">
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-      <BookmarkIcon className="h-7 w-7" />
-    </button>
-  </div>
-</div>
-
-
-          </div>
-
-          {/* Right Side (Image) */}
-          <Link to="/post" className="w-full h-auto md:w-60 md:h-40 flex-shrink-0 mt-2">
-            <img
-              className="rounded-lg w-full h-full object-cover"
-              src="/assets/img/image.png"
-              alt="Express.js Image"
-            />
-          </Link>
-        </div>
-      </div>
-        {/* Center the Card */}
-        <div className="flex justify-center mb-5">
-        <div className="block max-w-5xl bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 pt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-
-          {/* Left Side (Text Content) */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2">
-              {/* Small Image */}
-              <Link to="/profile" className="w-8 h-8 flex-shrink-0">
-                <img
-                  className="rounded-full w-full h-full object-cover"
-                  src="/assets/img/image.png"
-                  alt="Profile"
-                />
-              </Link>
-
-              {/* Author Name */}
-              <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
-                Mehdi BAFDIL
-              </Link>
-            </div>
-
-            <Link to="/post" className="block p-2">
-              <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-justify line-clamp-1 hover:underline">
-                Express.js Secrets That Senior Developers Don’t Share
-              </h5>
-              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2">
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-              </p>
-            </Link>
-
-            {/* Icons & Actions */}
-            <div className=" flex items-center text-sm text-gray-500 dark:text-gray-400 w-full">
-  {/* Left-aligned items */}
-  <div className="flex items-center space-x-4 mt-1">
-    <span>⭐ Dec 3, 2024</span>
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
-      <HandThumbUpIcon className="h-5 w-5" />
-      <span>738</span>
-    </button>
-    <Link to="/post" className="flex items-center space-x-1 hover:text-blue-500">
-      <ChatBubbleLeftRightIcon className="h-5 w-5" />
-      <span>24</span>
-    </Link>
-  </div>
-
-  {/* Right-aligned Bookmark */}
-  <div className="ml-auto flex items-center space-x-4">
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-      <BookmarkIcon className="h-7 w-7" />
-    </button>
-  </div>
-</div>
-
-
-          </div>
-
-          {/* Right Side (Image) */}
-          <Link to="/post" className="w-full h-auto md:w-60 md:h-40 flex-shrink-0 mt-2">
-            <img
-              className="rounded-lg w-full h-full object-cover"
-              src="/assets/img/image.png"
-              alt="Express.js Image"
-            />
-          </Link>
-        </div>
-      </div>
-        {/* Center the Card */}
-        <div className="flex justify-center mb-5">
-        <div className="block max-w-5xl bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 p-4 pt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-
-          {/* Left Side (Text Content) */}
-          <div className="flex-grow">
-            <div className="flex items-center gap-2">
-              {/* Small Image */}
-              <Link to="/profile" className="w-8 h-8 flex-shrink-0">
-                <img
-                  className="rounded-full w-full h-full object-cover"
-                  src="/assets/img/image.png"
-                  alt="Profile"
-                />
-              </Link>
-
-              {/* Author Name */}
-              <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
-                Mehdi BAFDIL
-              </Link>
-            </div>
-
-            <Link to="/post" className="block p-2">
-              <h5 className="mt-1 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-justify line-clamp-1 hover:underline">
-                Express.js Secrets That Senior Developers Don’t Share
-              </h5>
-              <p className="mt-1 text-sm text-gray-700 dark:text-gray-400 text-justify line-clamp-2">
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-                Express.js has been the backbone of Node.js web development for
-                years, but are you truly harnessing its full potential? Most...
-              </p>
-            </Link>
-
-            {/* Icons & Actions */}
-            <div className=" flex items-center text-sm text-gray-500 dark:text-gray-400 w-full">
-  {/* Left-aligned items */}
-  <div className="flex items-center space-x-4 mt-1">
-    <span>⭐ Dec 3, 2024</span>
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("like click")}>
-      <HandThumbUpIcon className="h-5 w-5" />
-      <span>738</span>
-    </button>
-    <Link to="/post" className="flex items-center space-x-1 hover:text-blue-500">
-      <ChatBubbleLeftRightIcon className="h-5 w-5" />
-      <span>24</span>
-    </Link>
-  </div>
-
-  {/* Right-aligned Bookmark */}
-  <div className="ml-auto flex items-center space-x-4">
-    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => console.log("bookmark click")}>
-      <BookmarkIcon className="h-7 w-7" />
-    </button>
-  </div>
-</div>
-
-
-          </div>
-
-          {/* Right Side (Image) */}
-          <Link to="/post" className="w-full h-auto md:w-60 md:h-40 flex-shrink-0 mt-2">
-            <img
-              className="rounded-lg w-full h-full object-cover"
-              src="/assets/img/image.png"
-              alt="Express.js Image"
-            />
-          </Link>
-        </div>
-      </div>
       </div>
     </>
   );

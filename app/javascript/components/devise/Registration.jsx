@@ -53,7 +53,7 @@ const Registration = () => {
         setConfirmationPasswordErrors(confirmationPasswordErrors);
         console.log(error.response.data);
       } else {  
-        console.error("Error submitting post:", error);
+        console.error("Error submitting registration:", error);
       }
     }
   };
@@ -72,17 +72,18 @@ const Registration = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-semibold text-gray-700 dark:text-white"> First Name </label>
-              <input type="text" placeholder="First Name" value={first_name} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-                onChange={(e) => setFirstName(e.target.value)}/>
-                {firstNameErrors.length > 0 && (
-                  <div className="text-xs text-red-500 mt-1"> {firstNameErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
-                )}
+              <input type="text" className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                placeholder="First Name" value={first_name} onChange={(e) => setFirstName(e.target.value)} />
+              {firstNameErrors.length > 0 && (
+                <div className="text-xs text-red-500 mt-1">
+                  {firstNameErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
+              )}
             </div>
 
             <div className="flex-1">
               <label className="block text-sm font-semibold text-gray-700 dark:text-white"> Last Name </label>
-              <input type="text" placeholder="Last Name" value={last_name} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-                onChange={(e) => setLastName(e.target.value)} />
+              <input type="text" className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                placeholder="Last Name" value={last_name} onChange={(e) => setLastName(e.target.value)} />
                 {lastNameErrors.length > 0 && (
                   <div className="text-xs text-red-500 mt-1"> {lastNameErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
                 )}
@@ -91,8 +92,8 @@ const Registration = () => {
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-white"> Date of Birth </label>
-            <input type="date" value={birthday} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-              onChange={(e) => setBirthday(e.target.value)} />
+            <input type="date" className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+              value={birthday} onChange={(e) => setBirthday(e.target.value)} />
               {birthdayErrors.length > 0 && (
                   <div className="text-xs text-red-500 mt-1"> {birthdayErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
               )}
@@ -100,8 +101,8 @@ const Registration = () => {
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-white"> Email </label>
-            <input type="email" placeholder="Email" value={email} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-              onChange={(e) => setEmail(e.target.value)} />
+            <input className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+              type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
               {emailErrors.length > 0 && (
                   <div className="text-xs text-red-500 mt-1"> {emailErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
               )}
@@ -110,8 +111,8 @@ const Registration = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm font-semibold text-gray-700 dark:text-white"> Password </label>
-              <input type="password" placeholder="Password" value={password} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-                onChange={(e) => setPassword(e.target.value)}/>
+              <input type="password" className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                 placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 {passwordErrors.length > 0 && (
                   <div className="text-xs text-red-500 mt-1"> {passwordErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
                 )}
@@ -119,8 +120,8 @@ const Registration = () => {
 
             <div className="flex-1">
               <label className="block text-sm font-semibold text-gray-700 dark:text-white"> Confirm Password </label>
-              <input type="password" placeholder="Confirm Password" value={password_confirmation} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
-                onChange={(e) => setconfirmPassword(e.target.value)} />
+              <input type="password" className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:bg-gray-700 dark:text-white"
+                placeholder="Confirm Password" value={password_confirmation} onChange={(e) => setconfirmPassword(e.target.value)} />
                 {confirmationPasswordErrors.length > 0 && (
                   <div className="text-xs text-red-500 mt-1"> {confirmationPasswordErrors.map((err, index) => ( <p key={index}>{err}</p> ))} </div>
                 )}
