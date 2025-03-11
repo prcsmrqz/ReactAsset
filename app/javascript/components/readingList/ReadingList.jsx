@@ -102,7 +102,7 @@ const ReadingList = () => {
                     <Link to={`/show/${rl.post.id}`}  className="w-full  md:w-60 md:h-50 flex-shrink-0 mt-2 md:mt-0">
                     <img className="rounded-lg w-full h-full object-cover" src={rl.post.coverimg_url || "/assets/img/image.png"} alt="Post Image" />
                     </Link>
-                    <h1>Hello</h1>
+                    <h1>Helloss</h1>
                 </div>
                 
                 ))
