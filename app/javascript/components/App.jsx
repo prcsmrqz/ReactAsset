@@ -38,10 +38,6 @@ const AppContent = () => {
   
   const location = useLocation(); 
 
-  useEffect(() => {
-    console.log("Current Path:", location.pathname);
-  }, [location.pathname]);
-
   // Check if the user is logged in and set the state to true if yes
   useEffect(() => {
     axios.get("/users/check_auth")
@@ -78,7 +74,6 @@ const AppContent = () => {
     }
   };
   
-
   // Refresh token after login, then set current user is login
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
@@ -119,7 +114,7 @@ const AppContent = () => {
             <Route path="/show/:id" element={pageCheck(isAuthenticated, <ShowForm />)} />
             <Route path="/create" element={pageCheck(isAuthenticated, <Form />)} />
             <Route path="/reading_list" element={pageCheck(isAuthenticated, <ReadingList />)} />
-            <Route path="/profile" element={pageCheck(isAuthenticated, <ProfilePage />)} />
+            <Route path="/profile/:id" element={pageCheck(isAuthenticated, <ProfilePage />)} />
 
             {/* Used when user is not logged in */}
             <Route path="/" element={<LandingPage />} />
@@ -127,10 +122,7 @@ const AppContent = () => {
             <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} refreshCsrfToken={refreshCsrfToken} />} />
           </Routes>
         </div>
-        {isAuthenticated &&
-        !location.pathname.startsWith("/edit/") &&
-        location.pathname !== "/create" &&
-        !location.pathname.startsWith("/show/") && (
+        {isAuthenticated && !location.pathname.startsWith("/edit/") && location.pathname !== "/create" && !location.pathname.startsWith("/show/") && (
           <div className="w-1/5 p-4 hidden md:block" key={location.pathname}>
             <RightNavbar />
           </div>

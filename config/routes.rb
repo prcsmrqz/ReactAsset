@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :posts do
     resources :comments
   end
+  get "/userPost/:id", to: "posts#userPost"
 
   root to: "home#index"
   get '*path', to: 'home#index', constraints: ->(req) { !req.xhr? && req.format.html? }

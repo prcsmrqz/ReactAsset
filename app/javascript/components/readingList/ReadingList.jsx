@@ -4,6 +4,7 @@ import React, {useState, useEffect} from "react"
 import { Link } from "react-router-dom"
 import axios from "axios";
 import showAlert from "../Alert";
+import { fetchReadingList, deleteReadingList } from "./ReadingListFunction.jsx"
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon, BookmarkIcon, MagnifyingGlassIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookmarkIconSolid } from "@heroicons/react/24/solid";
 
@@ -13,33 +14,10 @@ const ReadingList = () => {
     const [readingList, setReadingList] = useState([]);
     const [errors, setErrors] = useState([]);
 
-    useEffect (() => {
-        const fetchReadingList = async () => {
-            const response = await axios.get(`/reading_lists`);
-            console.log(response.data.reading_list);
-            setReadingList(response.data.reading_list);
-        };
-        fetchReadingList();
+    useEffect(() => {
+        fetchReadingList(setReadingList, setErrors);
     }, []);
-
-    const deleteReadingList = async (id) => {
-        setErrors([]);
-        // Wait for the confirmation of sweet alert to resolve
-        const result = await showAlert("Remove from reading list?", "Are you sure you want to remove from reading list?", "warning", "delete");
-      
-        // If user cancels, stop the deletion process
-        if (!result.isConfirmed) return;
-      
-        try {
-          await axios.delete(`/reading_lists/${id}`); 
-          setReadingList(readingList.filter(rl => rl.id !== id));
-      
-          // Show success alert after deletion
-          showAlert("Successfully Removed!", "Removed from reading list", "success");
-        } catch (error) {
-            setErrors("Error deleting post:", error);
-        }
-      };
+     
 
     return(
     <>
@@ -94,7 +72,7 @@ const ReadingList = () => {
                             <span>{rl.post.comments.length}</span>
                         </Link>
                         </div>
-                        <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => { deleteReadingList(rl.id) }}>
+                        <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => { deleteReadingList(rl.id, setReadingList, readingList, setErrors)}}>
                         <BookmarkIconSolid className="h-7 w-7 text-black" />
                         </button>
                     </div>
@@ -102,7 +80,6 @@ const ReadingList = () => {
                     <Link to={`/show/${rl.post.id}`}  className="w-full  md:w-60 md:h-50 flex-shrink-0 mt-2 md:mt-0">
                     <img className="rounded-lg w-full h-full object-cover" src={rl.post.coverimg_url || "/assets/img/image.png"} alt="Post Image" />
                     </Link>
-                    <h1>Helloss</h1>
                 </div>
                 
                 ))

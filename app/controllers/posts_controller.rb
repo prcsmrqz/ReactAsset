@@ -22,6 +22,23 @@ class PostsController < ApplicationController
       current_user: @user ? @user.as_json(only: [:id, :first_name, :last_name, :email]) : {}
     }
   end
+
+  def userPost
+    user = User.find_by(id: params[:id])
+    if user
+      posts = user.posts.order(created_at: :desc)
+      render json: {
+        posts: posts.as_json(
+          include: { comments: {}, user: { only: [:id, :first_name, :last_name] } },
+          methods: [:coverimg_url]
+        ),
+        user: user.as_json(only: [:id, :first_name, :last_name, :email, :bio, :birthday]),
+        current_user: @user.as_json(only: [:id, :first_name, :last_name, :email])
+      }
+    else
+      render json: { errors: "User not found" }, status: :not_found
+    end
+  end
   
   def show
     render json: {

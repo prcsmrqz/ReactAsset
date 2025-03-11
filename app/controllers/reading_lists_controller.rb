@@ -4,7 +4,7 @@ class ReadingListsController < ApplicationController
   before_action :set_reading_list, only: [:destroy]
 
   def index
-    @reading_list = current_user.reading_list.includes(post: :comments).order(created_at: :desc)
+    @reading_list = @user.reading_list.includes(post: :comments).order(created_at: :desc)
   
     render json: {
       reading_list: @reading_list.as_json(

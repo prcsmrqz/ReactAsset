@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { fetchReadingList, addReadingList, deleteReadingList } from "./readingList/ReadingListFunction.jsx"
 import showAlert from "./Alert";
 import { ChatBubbleLeftRightIcon, HandThumbUpIcon, BookmarkIcon, MagnifyingGlassIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";
 import { BookmarkIcon as BookmarkIconSolid } from "@heroicons/react/24/solid";
@@ -25,54 +26,14 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    const fetchReadingList = async () => {
-        const response = await axios.get("/reading_lists");
-        
-        setReadingList(response.data.reading_list);
-    };
-
-      fetchReadingList();
+          fetchReadingList(setReadingList, setErrors);
   }, []);
-
-
-  const addReadingList = async (postid) => {
-    setErrors([]);
-
-    try {
-      // save comment
-      const response = await axios.post(`/reading_lists`, {
-        reading_list: { post_id: postid },
-      });
-      
-      showAlert("Saved!", "Added to reading list", "success", "save");
-      setReadingList([...readingList, response.data.reading_list]);
-    } catch (error) {
-      showAlert("Error Adding Reading List!", error.response.data.errors, "error");
-      if (error.response && error.response.data.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        console.error("Error submitting comment:", error);
-      }
-    }
-  };
-
-  const deleteReadingList = async (id) => {
-    setErrors([]);
-    // Wait for the confirmation of sweet alert to resolve
-    const result = await showAlert("Remove from reading list?", "Are you sure you want to remove from reading list?", "warning", "delete");
   
-    // If user cancels, stop the deletion process
-    if (!result.isConfirmed) return;
-  
-    try {
-      await axios.delete(`/reading_lists/${id}`); 
-      setReadingList(readingList.filter(rl => rl.id !== id));
-  
-      // Show success alert after deletion
-      showAlert("Successfully Removed!", "Removed from reading list", "success");
-    } catch (error) {
-        setErrors("Error deleting post:", error);
-    }
+  const handleReadingList = (postId) => {
+    const existingItem = readingList.find(rl => rl.post_id === postId);
+      existingItem ? 
+        deleteReadingList(existingItem.id, setReadingList, readingList, setErrors)
+      : addReadingList(postId, setReadingList, readingList, setErrors);
   };
 
   return (
@@ -100,11 +61,11 @@ function Home() {
                 <div className="flex flex-col flex-grow">
                   {/* Profile pic, name, and date */}
                   <div className="flex items-center gap-2">
-                    <Link to="/profile" className="w-10 h-10 flex-shrink-0">
+                    <Link to={`/profile/${p.user.id}`} className="w-10 h-10 flex-shrink-0">
                       <img className="rounded-full w-full h-full object-cover" src="/assets/img/image.png" alt="Profile" />
                     </Link>
                     <div className="flex flex-col">
-                      <Link to="/profile" className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
+                      <Link to={`/profile/${p.user.id}`}  className="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
                         {p.user ? p.user.first_name + " " + p.user.last_name : "Unknown"}
                       </Link>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -134,8 +95,7 @@ function Home() {
                         <span>{p.comments.length}</span>
                       </Link>
                     </div>
-                    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => {const rl = readingList.find(rl => rl.post_id === p.id);
-                                                                                                        rl ? deleteReadingList(rl.id) : addReadingList(p.id)}}>
+                    <button className="flex items-center space-x-1 hover:text-blue-500" onClick={() => handleReadingList(p.id)} >
                       {readingList.map(rl => rl.post_id).includes(p.id) ? <BookmarkIconSolid className="h-7 w-7 text-black" /> : <BookmarkIcon className="h-7 w-7" /> }
                     </button>
                   </div>

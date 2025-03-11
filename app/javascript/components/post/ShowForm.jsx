@@ -154,7 +154,7 @@ const ShowForm = () => {
             <BookmarkIcon className="h-7 w-7" />
           </button>
         </div>
-
+        <img className="w-full h-full object-cover mb-10" src={posts.coverimg_url || "/assets/img/image.png"} alt="Cover Image" />
         <div className="content-container mb-8">
           <div ref={contentRef} className="text-justify text-base sm:text-lg md:text-xl leading-loose post-content"
             style={{  minHeight: "200px", fontFamily: "Georgia, serif", whiteSpace: "pre-line", pointerEvents: "none" }} />

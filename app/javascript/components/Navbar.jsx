@@ -20,6 +20,7 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
       const fetchUser = async () => {
         const userData = await CurrentUser();
         setUser(userData);
+        
       };
       fetchUser();
     }
@@ -72,6 +73,7 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
 
   if (location.pathname === "/create" || location.pathname.startsWith("/edit/") || location.pathname.startsWith("/show/")) {
     return (
+      
       <div className="w-full fixed top-0 left-0 bg-white border-b border-gray-300 text-black flex justify-between items-center p-4 z-50">
         <Link to="/home" className="text-xl font-bold">Blog App</Link>
         <div className="relative profile-dropdown">
@@ -83,10 +85,9 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
               </div>
             )}
           </button>
-          
           {isProfileOpen && (
            <div className="absolute top-full top-full right-0 -translate-x-[3%] min-w-[200px] w-[90%] max-w-[250px] bg-white border border-gray-300 rounded-md shadow-lg p-1">
-            <Link to="/profile" className="w-full flex items-center text-black hover:bg-gray-200 px-3 py-2 rounded-md text-sm">
+            <Link to={`/profile/${user?.id}`} className="w-full flex items-center text-black hover:bg-gray-200 px-3 py-2 rounded-md text-sm">
               <UserIcon className="h-5 w-5 mr-2" />Profile
             </Link>
             <Link onClick={handleLogout} className="w-full flex items-center text-black hover:bg-gray-200 px-3 py-2 rounded-md text-sm">
@@ -116,7 +117,6 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
             {location.pathname === "/home" ? ( <HomeIconSolid className="h-7 w-7" /> ) : ( <HomeIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Home</span>}
           </Link>
-          
           <Link to="/post" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/post" ? "font-bold" : "text-black"}`}>
           {location.pathname === "/post" ? ( <DocumentTextIconSolid className="h-7 w-7" /> ) : ( <DocumentTextIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Post</span>}
@@ -147,8 +147,8 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
           </Link>
 
 
-          <Link to="/profile" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/profile" ? "font-bold" : "text-black"}`}>
-          {location.pathname === "/profile" ? ( <UserSolid className="h-7 w-7" /> ) : ( <UserIcon className="h-7 w-7" /> )}
+          <Link to={`/profile/${user?.id}`} className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === `/profile/${user?.id}` ? "font-bold" : "text-black"}`}>
+          {location.pathname === `/profile/${user?.id}` ? ( <UserSolid className="h-7 w-7" /> ) : ( <UserIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Profile</span>}
           </Link>
           <Link to="/create" className="flex items-center p-2 transition w-full bg-black text-white rounded-3xl justify-center">
