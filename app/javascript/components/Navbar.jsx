@@ -142,8 +142,6 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
                   3
                 </span>
               </div>
-
-
             )}
             {!isSmallScreen && <span className="ml-3">Notification</span>}
           </Link>

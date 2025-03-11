@@ -14,14 +14,14 @@ function Home() {
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, nextPage: null, prevPage: null });
 
   useEffect(() => { 
-  const fetchPosts = async () => {
-    try {
-      const response = await axios.get(`/posts`);
-      setPosts(response.data.posts);
-      setcurrentUser(response.data.current_user);
-    } catch (error) { console.error("Error fetching posts:", error); }
-    }
-    fetchPosts(); 
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`/posts`);
+        setPosts(response.data.posts);
+        setcurrentUser(response.data.current_user);
+      } catch (error) { console.error("Error fetching posts:", error); }
+      }
+      fetchPosts(); 
   }, []);
 
   useEffect(() => {
@@ -58,7 +58,6 @@ function Home() {
 
   const deleteReadingList = async (id) => {
     setErrors([]);
-    console.log(id);
     // Wait for the confirmation of sweet alert to resolve
     const result = await showAlert("Remove from reading list?", "Are you sure you want to remove from reading list?", "warning", "delete");
   
@@ -71,10 +70,8 @@ function Home() {
   
       // Show success alert after deletion
       showAlert("Successfully Removed!", "Removed from reading list", "success");
-      console.log("remove" + readingList);
     } catch (error) {
-      console.log(error);
-            setErrors("Error deleting post:", error);
+        setErrors("Error deleting post:", error);
     }
   };
 
