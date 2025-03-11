@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import showAlert from "./Alert";
 import CurrentUser from "./devise/CurrentUser";
+
 import { DocumentTextIcon, UserCircleIcon, HomeIcon, ArrowLeftStartOnRectangleIcon, UserIcon, BellIcon, BookmarkIcon, MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { DocumentTextIcon as DocumentTextIconSolid, HomeIcon as HomeIconSolid, BellIcon as BellIconSolid, UserIcon as UserSolid, UserGroupIcon as UserGroupIconSolid, BookmarkIcon as BookMarkIconSolid, PencilSquareIcon as PencilSquareIconSolid  } from "@heroicons/react/24/solid";
 
@@ -112,31 +113,46 @@ export default function Navbar({ isAuthenticated, onLogout, refreshCsrfToken }) 
         <nav className="flex flex-col gap-4 p-2 mt-12 flex-1">
        
           <Link to="/home" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/" ? "font-bold" : "text-black"}`}>
-            {location.pathname === "/home" ? ( <HomeIconSolid className="h-5 w-5" /> ) : ( <HomeIcon className="h-5 w-5" /> )}
+            {location.pathname === "/home" ? ( <HomeIconSolid className="h-7 w-7" /> ) : ( <HomeIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Home</span>}
           </Link>
           
           <Link to="/post" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/post" ? "font-bold" : "text-black"}`}>
-          {location.pathname === "/post" ? ( <DocumentTextIconSolid className="h-5 w-5" /> ) : ( <DocumentTextIcon className="h-5 w-5" /> )}
+          {location.pathname === "/post" ? ( <DocumentTextIconSolid className="h-7 w-7" /> ) : ( <DocumentTextIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Post</span>}
           </Link>
 
-          <Link to="/readinglist" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/readinglist" ? "font-bold" : "text-black"}`}>
-          {location.pathname === "/readinglist" ? ( <BookMarkIconSolid className="h-5 w-5" /> ) : ( <BookmarkIcon className="h-5 w-5" /> )}
+          <Link to="/reading_list" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/reading_list" ? "font-bold" : "text-black"}`}>
+          {location.pathname === "/reading_list" ? ( <BookMarkIconSolid className="h-7 w-7" /> ) : ( <BookmarkIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Reading List</span>}
           </Link>
 
-          <Link to="/notification" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/notification" ? "font-bold" : "text-black"}`}>
-          {location.pathname === "/notification" ? ( <BellIconSolid className="h-5 w-5" /> ) : ( <BellIcon className="h-5 w-5" /> )}
+          <Link to="/notification" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/notification" ? "font-bold" : "text-black" }`}>
+            {location.pathname === "/notification" ? (
+              <div className="relative">
+                <BellIconSolid className="h-7 w-7" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[10px] text-center">
+                  3
+                </span>
+              </div>
+            ) : (
+              <div className="relative">
+                <BellIcon className="h-7 w-7" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center">
+                  3
+                </span>
+              </div>
+            )}
             {!isSmallScreen && <span className="ml-3">Notification</span>}
           </Link>
 
+
           <Link to="/profile" className={`flex items-center p-2 transition w-full hover:bg-gray-200 hover:rounded-2xl ${location.pathname === "/profile" ? "font-bold" : "text-black"}`}>
-          {location.pathname === "/profile" ? ( <UserSolid className="h-5 w-5" /> ) : ( <UserIcon className="h-5 w-5" /> )}
+          {location.pathname === "/profile" ? ( <UserSolid className="h-7 w-7" /> ) : ( <UserIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Profile</span>}
           </Link>
           <Link to="/create" className="flex items-center p-2 transition w-full bg-black text-white rounded-3xl justify-center">
-          {location.pathname === "/create" ? ( <PencilSquareIconSolid className="h-5 w-5" /> ) : ( <PencilSquareIcon className="h-5 w-5" /> )}
+          {location.pathname === "/create" ? ( <PencilSquareIconSolid className="h-7 w-7" /> ) : ( <PencilSquareIcon className="h-7 w-7" /> )}
             {!isSmallScreen && <span className="ml-3">Create</span>}
           </Link>
         </nav>

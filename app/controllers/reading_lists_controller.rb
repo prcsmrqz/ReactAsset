@@ -4,11 +4,24 @@ class ReadingListsController < ApplicationController
   before_action :set_reading_list, only: [:destroy]
 
   def index
-    @reading_list = current_user.reading_list
-    puts @reading_list
-    render json: @reading_list
+    @reading_list = current_user.reading_list.includes(post: :comments).order(created_at: :desc)
+  
+    render json: {
+      reading_list: @reading_list.as_json(
+        include: {
+          user: { only: [:id, :first_name, :last_name] },
+          post: {
+            include: :comments,  
+            methods: [:coverimg_url]
+          }
+        }
+      ),
+      current_user: @user ? @user.as_json(only: [:id, :first_name, :last_name]) : {}
+    }
   end
-
+  
+  
+  
   def show
     
   end
@@ -18,9 +31,6 @@ class ReadingListsController < ApplicationController
     @readingList.user = current_user
     
     if @readingList.save
-      puts @readingList.post_id
-    puts @readingList.id
-    puts @readingList.user_id
       render json: {reading_list: @readingList}, status: :created
     else
       render json: { errors: @readingList.errors.full_messages }, status: :unprocessable_entity
