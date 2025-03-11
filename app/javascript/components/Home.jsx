@@ -28,7 +28,7 @@ function Home() {
     const fetchReadingList = async () => {
         const response = await axios.get("/reading_lists");
         
-        setReadingList(response.data);
+        setReadingList(response.data.reading_list);
     };
 
       fetchReadingList();
